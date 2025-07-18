@@ -1,0 +1,6 @@
+@GeziBlog.API_HostAddress = http://localhost:5229
+
+GET {{GeziBlog.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

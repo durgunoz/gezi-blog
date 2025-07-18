@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GeziBlog.API</name>
+    </assembly>
+    <members>
+        <member name="M:GeziBlog.API.Controllers.PostController.GetPosts">
+            <summary>Tüm blog yazılarını getirir.</summary>
+        </member>
+        <member name="M:GeziBlog.API.Controllers.PostController.GetPost(System.Int32)">
+            <summary>Belirli ID'ye sahip blog yazısını getirir.</summary>
+        </member>
+        <member name="M:GeziBlog.API.Controllers.PostController.CreatePost(GeziBlog.API.Models.Post)">
+            <summary>Yeni blog yazısı oluşturur.</summary>
+        </member>
+        <member name="M:GeziBlog.API.Controllers.PostController.UpdatePost(System.Int32,GeziBlog.API.Models.Post)">
+            <summary>Var olan bir yazıyı günceller.</summary>
+        </member>
+        <member name="M:GeziBlog.API.Controllers.PostController.DeletePost(System.Int32)">
+            <summary>Yazıyı siler.</summary>
+        </member>
+    </members>
+</doc>
