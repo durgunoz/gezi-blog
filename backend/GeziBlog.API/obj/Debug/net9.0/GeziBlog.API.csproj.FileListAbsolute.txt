@@ -85,3 +85,4 @@ C:\Users\Burhanberkdurgunoz\Desktop\gezi-blog\backend\GeziBlog.API\obj\Debug\net
 C:\Users\Burhanberkdurgunoz\Desktop\gezi-blog\backend\GeziBlog.API\obj\Debug\net9.0\GeziBlog.API.pdb
 C:\Users\Burhanberkdurgunoz\Desktop\gezi-blog\backend\GeziBlog.API\obj\Debug\net9.0\GeziBlog.API.genruntimeconfig.cache
 C:\Users\Burhanberkdurgunoz\Desktop\gezi-blog\backend\GeziBlog.API\obj\Debug\net9.0\ref\GeziBlog.API.dll
+C:\Users\Burhanberkdurgunoz\Desktop\gezi-blog\backend\GeziBlog.API\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
