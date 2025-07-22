@@ -10,14 +10,38 @@
         <member name="M:GeziBlog.API.Controllers.PostController.GetPost(System.Int32)">
             <summary>Belirli ID'ye sahip blog yazısını getirir.</summary>
         </member>
-        <member name="M:GeziBlog.API.Controllers.PostController.CreatePost(GeziBlog.API.Models.Post)">
+        <member name="M:GeziBlog.API.Controllers.PostController.CreatePost(GeziBlog.API.Dtos.PostCreateDto)">
             <summary>Yeni blog yazısı oluşturur.</summary>
         </member>
-        <member name="M:GeziBlog.API.Controllers.PostController.UpdatePost(System.Int32,GeziBlog.API.Models.Post)">
+        <member name="M:GeziBlog.API.Controllers.PostController.UpdatePost(System.Int32,Post)">
             <summary>Var olan bir yazıyı günceller.</summary>
         </member>
         <member name="M:GeziBlog.API.Controllers.PostController.DeletePost(System.Int32)">
             <summary>Yazıyı siler.</summary>
+        </member>
+        <member name="T:GeziBlog.API.Migrations.InitialCreate">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:GeziBlog.API.Migrations.AddFullBlogSchema">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddFullBlogSchema.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddFullBlogSchema.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddFullBlogSchema.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
         </member>
     </members>
 </doc>

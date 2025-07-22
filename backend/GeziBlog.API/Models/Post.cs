@@ -1,39 +1,20 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using GeziBlog.API.Models.Enums;
+using GeziBlog.API.Models;
 
-
-namespace GeziBlog.API.Models
+public class Post
 {
-    public class Post
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Content { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        [Required]
-        public string Title { get; set; } = string.Empty;  // Gezi Başlığı
+    public int AuthorId { get; set; }
+    public Author? Author { get; set; }
 
-        [Required]
-        public string ShortDescription { get; set; } = string.Empty; // Kısa açıklama
+    public string? ImageUrl { get; set; }
+    public bool IsPublished { get; set; } = true;
+    public int ViewCount { get; set; } = 0;
 
-        [Required]
-        public string ConQtent { get; set; } = string.Empty; // Uzun yazı
-
-        public string? CoverImageUrl { get; set; } // Ana görsel
-
-        public List<string>? GalleryImageUrls { get; set; } // Çoklu görseller (opsiyonel)
-
-        [Required]
-        public TripType TripType { get; set; }  // 🔁 Enum'a çevrildi
-
-        [Required]
-        public BudgetRange Budget { get; set; }  // 🔁 Enum'a çevrildi
-
-        [Required]
-        public DateTime TripDate { get; set; } // Tatil tarihi
-
-        // Entegrasyon sonra: kullanıcı giriş sistemiyle doldurulacak
-        [ForeignKey("Author")]
-        public int AuthorId { get; set; }
-        public Author? Author { get; set; }
-    }
+    public ICollection<PostCategory> PostCategories { get; set; } = new List<PostCategory>();
+    public ICollection<PostTag> PostTags { get; set; } = new List<PostTag>();
+    public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 }
