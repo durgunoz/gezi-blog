@@ -30,7 +30,19 @@ namespace GeziBlog.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -224,17 +236,12 @@ namespace GeziBlog.API.Migrations
             modelBuilder.Entity("Post", b =>
                 {
                     b.HasOne("GeziBlog.API.Models.Author", "Author")
-                        .WithMany("Posts")
+                        .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Author");
-                });
-
-            modelBuilder.Entity("GeziBlog.API.Models.Author", b =>
-                {
-                    b.Navigation("Posts");
                 });
 
             modelBuilder.Entity("GeziBlog.API.Models.Category", b =>

@@ -1,0 +1,50 @@
+ilişkisel veri tabanı --> mssql
+Controller'larla iletmek için dto sistemi
+ve oto mapping
+
+Bir Author birçok Post yazabilir.
+
+Post (N) --- (N) Category
+
+Bir Post'un birçok Tagi olabilir (ve tersine).
+
+Bir Post'un birçok Comment'i olabilir.
+
+
+giriş yapınca : admin, author, reader
+
+admin'de reader'ı author yapıcak yetki
+author ve admin post ekleyebili
+
+
+
+
+
+
+
+
+
+
+http://localhost:5229/api/Post?Title=Ege
+
+{"id":1,"title":"Ege'de Saklı Kalmış Koylar","content":"Bu yaz tatilinde Ege kıyılarında keşfettiğim koylar beni gerçekten büyüledi...","createdAt":"2025-03-11T00:00:00","imageUrl":null,"isPublished":false,"viewCount":0,"author":{"id":2,"name":"Ayşe Yıldız"},"categories":[{"id":4,"name":"Tarihi"},{"id":5,"name":"Cruise"}],"tags":[],"comments":[]}]
+
+
+
+
+
+admin@gezi.com 
+Admin123!
+
+
+kullanıcı
+
+emre@test.com"
+123456Emre
+
+
+erdem123@test.com
+123456Emre.!
+
+enes@test.com
+123456Emre.!

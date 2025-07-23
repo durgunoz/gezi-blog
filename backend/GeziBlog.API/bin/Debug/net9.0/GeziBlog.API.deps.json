@@ -8,13 +8,15 @@
     ".NETCoreApp,Version=v9.0": {
       "GeziBlog.API/1.0.0": {
         "dependencies": {
+          "BCrypt.Net-Next": "4.0.3",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "9.0.7",
           "Microsoft.AspNetCore.OpenApi": "9.0.7",
           "Microsoft.EntityFrameworkCore": "9.0.7",
           "Microsoft.EntityFrameworkCore.Design": "9.0.7",
           "Microsoft.EntityFrameworkCore.InMemory": "9.0.7",
           "Microsoft.EntityFrameworkCore.SqlServer": "9.0.7",
-          "Swashbuckle.AspNetCore": "9.0.3"
+          "Swashbuckle.AspNetCore": "9.0.3",
+          "Swashbuckle.AspNetCore.Annotations": "9.0.3"
         },
         "runtime": {
           "GeziBlog.API.dll": {}
@@ -52,6 +54,14 @@
           "lib/netstandard2.0/Azure.Identity.dll": {
             "assemblyVersion": "1.11.4.0",
             "fileVersion": "1.1100.424.31005"
+          }
+        }
+      },
+      "BCrypt.Net-Next/4.0.3": {
+        "runtime": {
+          "lib/net6.0/BCrypt.Net-Next.dll": {
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "4.0.3.0"
           }
         }
       },
@@ -780,6 +790,17 @@
           "Swashbuckle.AspNetCore.SwaggerUI": "9.0.3"
         }
       },
+      "Swashbuckle.AspNetCore.Annotations/9.0.3": {
+        "dependencies": {
+          "Swashbuckle.AspNetCore.SwaggerGen": "9.0.3"
+        },
+        "runtime": {
+          "lib/net9.0/Swashbuckle.AspNetCore.Annotations.dll": {
+            "assemblyVersion": "9.0.3.0",
+            "fileVersion": "9.0.3.1613"
+          }
+        }
+      },
       "Swashbuckle.AspNetCore.Swagger/9.0.3": {
         "dependencies": {
           "Microsoft.OpenApi": "1.6.23"
@@ -1074,6 +1095,13 @@
       "sha512": "sha512-Sf4BoE6Q3jTgFkgBkx7qztYOFELBCo+wQgpYDwal/qJ1unBH73ywPztIJKXBXORRzAeNijsuxhk94h0TIMvfYg==",
       "path": "azure.identity/1.11.4",
       "hashPath": "azure.identity.1.11.4.nupkg.sha512"
+    },
+    "BCrypt.Net-Next/4.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-W+U9WvmZQgi5cX6FS5GDtDoPzUCV4LkBLkywq/kRZhuDwcbavOzcDAr3LXJFqHUi952Yj3LEYoWW0jbEUQChsA==",
+      "path": "bcrypt.net-next/4.0.3",
+      "hashPath": "bcrypt.net-next.4.0.3.nupkg.sha512"
     },
     "Humanizer.Core/2.14.1": {
       "type": "package",
@@ -1389,6 +1417,13 @@
       "sha512": "sha512-Akk4oFgy0ST8Q8pZTfPbrt045tWNyMMiKhlbYjG3qnjQZLz645IL5vhQm7NLicc2sAAQ+vftArIlsYWFevmb2g==",
       "path": "swashbuckle.aspnetcore/9.0.3",
       "hashPath": "swashbuckle.aspnetcore.9.0.3.nupkg.sha512"
+    },
+    "Swashbuckle.AspNetCore.Annotations/9.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-YqrsOYqw5TQ5PBsc1eQS4M9LGyxICq6bL+933qbh8xI42uUpIA/YhNb08fVFEvPnxQSTTeYPIomh1QUVNUDorg==",
+      "path": "swashbuckle.aspnetcore.annotations/9.0.3",
+      "hashPath": "swashbuckle.aspnetcore.annotations.9.0.3.nupkg.sha512"
     },
     "Swashbuckle.AspNetCore.Swagger/9.0.3": {
       "type": "package",

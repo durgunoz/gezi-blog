@@ -4,8 +4,8 @@
         <name>GeziBlog.API</name>
     </assembly>
     <members>
-        <member name="M:GeziBlog.API.Controllers.PostController.GetPosts">
-            <summary>Tüm blog yazılarını getirir.</summary>
+        <member name="M:GeziBlog.API.Controllers.PostController.GetPosts(GeziBlog.API.Dtos.PostFilterDto)">
+            <summary>Tüm blog yazılarını getirir ve filtrelere göre süzer.</summary>
         </member>
         <member name="M:GeziBlog.API.Controllers.PostController.GetPost(System.Int32)">
             <summary>Belirli ID'ye sahip blog yazısını getirir.</summary>
@@ -13,7 +13,7 @@
         <member name="M:GeziBlog.API.Controllers.PostController.CreatePost(GeziBlog.API.Dtos.PostCreateDto)">
             <summary>Yeni blog yazısı oluşturur.</summary>
         </member>
-        <member name="M:GeziBlog.API.Controllers.PostController.UpdatePost(System.Int32,Post)">
+        <member name="M:GeziBlog.API.Controllers.PostController.UpdatePost(System.Int32,GeziBlog.API.Dtos.PostUpdateDto)">
             <summary>Var olan bir yazıyı günceller.</summary>
         </member>
         <member name="M:GeziBlog.API.Controllers.PostController.DeletePost(System.Int32)">
@@ -41,6 +41,30 @@
             <inheritdoc />
         </member>
         <member name="M:GeziBlog.API.Migrations.AddFullBlogSchema.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:GeziBlog.API.Migrations.AddPasswordAndRoleToAuthor">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddPasswordAndRoleToAuthor.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddPasswordAndRoleToAuthor.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddPasswordAndRoleToAuthor.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:GeziBlog.API.Migrations.AddAuthorLoginFields">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddAuthorLoginFields.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddAuthorLoginFields.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddAuthorLoginFields.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
     </members>

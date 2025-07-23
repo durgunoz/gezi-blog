@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "Fkfw09DoocQ=",
+  "dgSpecHash": "LPpYKn8E2jg=",
   "success": true,
   "projectFilePath": "C:\\Users\\Burhanberkdurgunoz\\Desktop\\gezi-blog\\backend\\GeziBlog.API\\GeziBlog.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Burhanberkdurgunoz\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\Burhanberkdurgunoz\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
+    "C:\\Users\\Burhanberkdurgunoz\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Burhanberkdurgunoz\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Burhanberkdurgunoz\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\9.0.7\\microsoft.aspnetcore.authentication.jwtbearer.9.0.7.nupkg.sha512",
     "C:\\Users\\Burhanberkdurgunoz\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.7\\microsoft.aspnetcore.openapi.9.0.7.nupkg.sha512",
@@ -51,6 +52,7 @@
     "C:\\Users\\Burhanberkdurgunoz\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\Burhanberkdurgunoz\\.nuget\\packages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
     "C:\\Users\\Burhanberkdurgunoz\\.nuget\\packages\\swashbuckle.aspnetcore\\9.0.3\\swashbuckle.aspnetcore.9.0.3.nupkg.sha512",
+    "C:\\Users\\Burhanberkdurgunoz\\.nuget\\packages\\swashbuckle.aspnetcore.annotations\\9.0.3\\swashbuckle.aspnetcore.annotations.9.0.3.nupkg.sha512",
     "C:\\Users\\Burhanberkdurgunoz\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\9.0.3\\swashbuckle.aspnetcore.swagger.9.0.3.nupkg.sha512",
     "C:\\Users\\Burhanberkdurgunoz\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\9.0.3\\swashbuckle.aspnetcore.swaggergen.9.0.3.nupkg.sha512",
     "C:\\Users\\Burhanberkdurgunoz\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\9.0.3\\swashbuckle.aspnetcore.swaggerui.9.0.3.nupkg.sha512",

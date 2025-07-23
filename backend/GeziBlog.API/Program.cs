@@ -12,13 +12,32 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. Services
 // ----------------------
 
+// DB bağlantısı
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add controllers
+// JWT key appsettings.json'dan çekilir
+var jwtSecretKey = builder.Configuration["JwtSettings:SecretKey"];
+if (string.IsNullOrEmpty(jwtSecretKey) || jwtSecretKey.Length < 32)
+    throw new Exception("JWT secret key tanımlı değil veya yeterince güçlü değil!");
+
+// JWT Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecretKey))
+        };
+    });
+
+// Controllers
 builder.Services.AddControllers();
 
-// Add Swagger with JWT support
+// Swagger + JWT
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -27,7 +46,6 @@ builder.Services.AddSwaggerGen(c =>
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 
-    // JWT Authentication setup for Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -35,7 +53,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "JWT Token'ı 'Bearer ' önekiyle girin. Örn: Bearer eyJhbGciOiJIUzI1..."
+        Description = "JWT Token'ınızı 'Bearer ' ile başlayacak şekilde giriniz. Örn: Bearer abc.def.ghi"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -49,30 +67,17 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "Bearer"
                 }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
 });
 
-// Add JWT Authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super-secret-key")) // Bu key token üretiminde de kullanılmalı
-        };
-    });
-
-// Add CORS for frontend access
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins("http://localhost:5173") // Vite veya başka port kullanıyorsan burayı güncelle
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -90,18 +95,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Use static files (for images, etc.)
+// Statik dosyalar
 app.UseStaticFiles();
 
-app.UseHttpsRedirection();
-
-// Enable CORS
+// CORS
 app.UseCors("AllowFrontend");
 
-// Enable Auth middleware
-app.UseAuthentication(); // 👈 Önemli: Authorization'dan önce çağrılmalı
+// HTTPS
+app.UseHttpsRedirection();
+
+// Auth
+app.UseAuthentication(); // JWT doğrulaması önce olmalı
 app.UseAuthorization();
 
+// Routing
 app.MapControllers();
 
 app.Run();
