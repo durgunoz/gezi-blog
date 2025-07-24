@@ -3,6 +3,7 @@ using GeziBlog.API.Models;
 using GeziBlog.API.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace GeziBlog.API.Controllers
@@ -80,6 +81,19 @@ public async Task<IActionResult> GetPosts([FromQuery] PostFilterDto filter)
 }
 
 
+    // Tüm etiketleri döndür
+    [HttpGet("tags")]
+    public async Task<IActionResult> GetTags()
+    {
+        var tags = await _context.Tags
+            .Select(t => new TagDto { Id = t.Id, Name = t.Name })
+            .ToListAsync();
+
+        return Ok(tags);
+    }
+
+
+
         /// <summary>Belirli ID'ye sahip blog yazısını getirir.</summary>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(PostDto), 200)]
@@ -102,77 +116,70 @@ public async Task<IActionResult> GetPosts([FromQuery] PostFilterDto filter)
 
 
         /// <summary>Yeni blog yazısı oluşturur.</summary>
-        [HttpPost]
-        [ProducesResponseType(typeof(PostDto), 201)]
-        [ProducesResponseType(400)]
-        //[Microsoft.AspNetCore.Authorization.Authorize]
-        public async Task<IActionResult> CreatePost([FromBody] PostCreateDto postDto)
-        {
-            // var username = User.Identity?.Name;
-            // if (string.IsNullOrEmpty(username)) return Unauthorized();
+[HttpPost]
+[ProducesResponseType(typeof(PostDto), 201)]
+[ProducesResponseType(400)]
+[Authorize(Roles = "Author,Admin")]
+public async Task<IActionResult> CreatePost([FromBody] PostCreateDto postDto)
+{
+    // JWT içindeki kullanıcı adını al
+    var username = User.Identity?.Name;
+    if (string.IsNullOrEmpty(username))
+        return Unauthorized("Kullanıcı kimliği alınamadı.");
 
-            // var author = await _context.Authors.FirstOrDefaultAsync(a => a.Name == username);
-            // if (author == null)
-            //     return BadRequest("Kullanıcıya ait yazar bulunamadı.");
+    // Token'daki isme göre yazar kontrolü
+    var author = await _context.Authors.FirstOrDefaultAsync(a => a.Name == username);
+    if (author == null)
+        return BadRequest("Kullanıcıya ait yazar bulunamadı.");
 
-            // Auth devre dışı bırakıldığı için, varsayılan bir yazar kullanılıyor.
-            // Test ortamı için ilk yazarı alıyoruz. Gerçek uygulamada bu olmamalıdır.
-            var author = await _context.Authors.FirstOrDefaultAsync();
-            if (author == null)
-                return BadRequest("Veritabanında yazar bulunamadı. Lütfen test için bir yazar ekleyin.");
+    // Gönderilen kategori ID'leri geçerli mi?
+    if (postDto.CategoryIds.Any())
+    {
+        var validCategoryCount = await _context.Categories
+            .CountAsync(c => postDto.CategoryIds.Contains(c.Id));
+        if (validCategoryCount != postDto.CategoryIds.Distinct().Count())
+            return BadRequest("Bir veya daha fazla kategori ID'si geçersiz.");
+    }
 
-            // Gönderilen Kategori ve Etiket ID'lerinin geçerli olup olmadığını kontrol et
-            if (postDto.CategoryIds.Any())
-            {
-                var existingCategoryCount = await _context.Categories.CountAsync(c => postDto.CategoryIds.Contains(c.Id));
-                if (existingCategoryCount != postDto.CategoryIds.Distinct().Count())
-                    return BadRequest("Bir veya daha fazla kategori ID'si geçersiz.");
-            }
+    // Gönderilen etiket ID'leri geçerli mi?
+    if (postDto.TagIds.Any())
+    {
+        var validTagCount = await _context.Tags
+            .CountAsync(t => postDto.TagIds.Contains(t.Id));
+        if (validTagCount != postDto.TagIds.Distinct().Count())
+            return BadRequest("Bir veya daha fazla etiket ID'si geçersiz.");
+    }
 
-            if (postDto.TagIds.Any())
-            {
-                var existingTagCount = await _context.Tags.CountAsync(t => postDto.TagIds.Contains(t.Id));
-                if (existingTagCount != postDto.TagIds.Distinct().Count())
-                    return BadRequest("Bir veya daha fazla etiket ID'si geçersiz.");
-            }
+    // Post oluştur
+    var post = new Post
+    {
+        Title = postDto.Title,
+        Content = postDto.Content,
+        CreatedAt = DateTime.UtcNow,
+        ImageUrl = postDto.ImageUrl,
+        IsPublished = postDto.IsPublished,
+        ViewCount = 0,
+        Author = author
+    };
 
+    // İlişkili kategorileri ekle
+    post.PostCategories = postDto.CategoryIds.Select(catId => new PostCategory
+    {
+        CategoryId = catId
+    }).ToList();
 
-            var post = new Post
-            {
-                Title = postDto.Title,
-                Content = postDto.Content,
-                CreatedAt = DateTime.UtcNow,
-                ImageUrl = postDto.ImageUrl,
-                IsPublished = postDto.IsPublished,
-                ViewCount = 0,
-                Author = author
-            };
+    // İlişkili etiketleri ekle
+    post.PostTags = postDto.TagIds.Select(tagId => new PostTag
+    {
+        TagId = tagId
+    }).ToList();
 
-            // Kategoriler
-            post.PostCategories = postDto.CategoryIds.Select(catId => new PostCategory
-            {
-                CategoryId = catId
-            }).ToList();
+    _context.Posts.Add(post);
+    await _context.SaveChangesAsync();
 
-            // Etiketler
-            post.PostTags = postDto.TagIds.Select(tagId => new PostTag
-            {
-                TagId = tagId
-            }).ToList();
+    return CreatedAtAction(nameof(CreatePost), new { id = post.Id }, post);
+}
 
-            _context.Posts.Add(post);
-            await _context.SaveChangesAsync();
-
-            // Oluşturulan kaynağı tam haliyle (ilişkili verilerle birlikte) döndürmek en iyi pratiktir.
-            var createdPost = await _context.Posts
-                .Include(p => p.Author)
-                .Include(p => p.PostCategories).ThenInclude(pc => pc.Category)
-                .Include(p => p.PostTags).ThenInclude(pt => pt.Tag)
-                .Include(p => p.Comments)
-                .FirstOrDefaultAsync(p => p.Id == post.Id);
-
-            return CreatedAtAction(nameof(GetPost), new { id = post.Id }, MapPostToDto(createdPost!));
-        }
 
         // Tüm kategorileri döndür
         [HttpGet("categories")]

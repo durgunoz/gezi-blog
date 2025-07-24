@@ -61,6 +61,26 @@ namespace GeziBlog.API.Controllers
             return Ok(new { token }); // 🔥 Burada response body'ye token dönülmeli
         }
 
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrEmpty(refreshToken))
+                return BadRequest("Refresh token bulunamadı.");
+
+            var tokenInDb = await _context.RefreshTokens.FirstOrDefaultAsync(t => t.Token == refreshToken);
+            if (tokenInDb != null)
+            {
+                _context.RefreshTokens.Remove(tokenInDb);
+                await _context.SaveChangesAsync();
+            }
+
+            Response.Cookies.Delete("refreshToken");
+
+            return Ok(new { message = "Çıkış yapıldı." });
+        }
 
         [HttpGet("all")]
         [Authorize(Roles = "Admin")] // Sadece admin erişebilir

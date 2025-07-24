@@ -4,8 +4,9 @@ import Header from './components/Header';
 import Home from './pages/Home';
 import About from './pages/About';
 import PostDetail from './pages/PostDetail';
-import Login from './pages/Login';        // 🆕 Giriş sayfası
-import Register from './pages/Register';  // 🆕 Kayıt sayfası
+import Login from './pages/Login';
+import Register from './pages/Register';
+import AddPost from './pages/AddPost';
 
 const App = () => {
   return (
@@ -17,8 +18,9 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/hakkimizda" element={<About />} />
             <Route path="/post/:id" element={<PostDetail />} />
-            <Route path="/login" element={<Login />} />         {/* 🆕 Giriş */}
-            <Route path="/register" element={<Register />} />      {/* 🆕 Kayıt */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/add-post" element={<AddPost />} />
           </Routes>
         </main>
       </div>

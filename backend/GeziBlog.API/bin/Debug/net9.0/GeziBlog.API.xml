@@ -67,5 +67,17 @@
         <member name="M:GeziBlog.API.Migrations.AddAuthorLoginFields.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:GeziBlog.API.Migrations.AddRefreshTokenTable">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddRefreshTokenTable.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddRefreshTokenTable.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddRefreshTokenTable.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
     </members>
 </doc>

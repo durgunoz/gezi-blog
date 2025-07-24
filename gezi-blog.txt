@@ -1,3 +1,7 @@
+axios veri çağırma
+swagger ui
+vite - front
+
 ilişkisel veri tabanı --> mssql
 Controller'larla iletmek için dto sistemi
 ve oto mapping
@@ -15,6 +19,12 @@ giriş yapınca : admin, author, reader
 
 admin'de reader'ı author yapıcak yetki
 author ve admin post ekleyebili
+
+
+
+stateless token kullanıyor --> geçerlilik süresi var
+
+token clien'te silinirse başkası hala tokeni kullanabilir --> güvensizlik
 
 
 
@@ -37,6 +47,14 @@ admin@gezi.com
 Admin123!
 
 
+berk@test.com
+123456Emre.!
+
+
+enes@test.com
+123456Emre.!
+
+
 kullanıcı
 
 emre@test.com"
@@ -44,7 +62,4 @@ emre@test.com"
 
 
 erdem123@test.com
-123456Emre.!
-
-enes@test.com
 123456Emre.!
