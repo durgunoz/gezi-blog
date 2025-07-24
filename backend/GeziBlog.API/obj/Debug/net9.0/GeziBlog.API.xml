@@ -4,6 +4,17 @@
         <name>GeziBlog.API</name>
     </assembly>
     <members>
+        <member name="M:GeziBlog.API.Controllers.CommentController.GetCommentsByPost(System.Int32)">
+            <summary>
+            Belirli bir post'a ait yorumları getirir.
+            </summary>
+        </member>
+        <member name="M:GeziBlog.API.Controllers.CommentController.AddComment(System.Int32,GeziBlog.API.Dtos.AddCommentDto)">
+            <summary>
+            Sadece giriş yapmış kullanıcılar yorum bırakabilir.
+            Yorum adı ve e-posta token'dan alınır.
+            </summary>
+        </member>
         <member name="M:GeziBlog.API.Controllers.PostController.GetPosts(GeziBlog.API.Dtos.PostFilterDto)">
             <summary>Tüm blog yazılarını getirir ve filtrelere göre süzer.</summary>
         </member>

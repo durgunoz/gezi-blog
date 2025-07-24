@@ -82,7 +82,7 @@ export default function AddPost() {
         />
 
         {/* Kategori seçimi */}
-        <div>
+        {/* <div>
           <label className="block font-medium">Kategoriler:</label>
           <select
             multiple
@@ -96,34 +96,53 @@ export default function AddPost() {
               <option key={cat.id} value={cat.id}>{cat.name}</option>
             ))}
           </select>
-        </div>
+        </div> */}
 
         {/* Etiket seçimi */}
         <div>
-          <label className="block font-medium">Etiketler:</label>
+          <label className="block font-medium mb-1">Etiketler:</label>
+
+          {/* Select alanı yukarı */}
           <select
-            multiple
-            value={selectedTagIds}
-            onChange={(e) =>
-              setSelectedTagIds(Array.from(e.target.selectedOptions, o => parseInt(o.value)))
-            }
-            className="w-full p-2 border rounded"
+            value=""
+            onChange={(e) => {
+              const selected = parseInt(e.target.value);
+              if (!selectedTagIds.includes(selected)) {
+                setSelectedTagIds([...selectedTagIds, selected]);
+              }
+            }}
+            className="w-full p-2 border rounded mb-2"
           >
-            {tags.map(tag => (
-              <option key={tag.id} value={tag.id}>{tag.name}</option>
-            ))}
+            <option value="">Etiket ekle</option>
+            {tags
+              .filter(tag => !selectedTagIds.includes(tag.id))
+              .map(tag => (
+                <option key={tag.id} value={tag.id}>{tag.name}</option>
+              ))}
           </select>
-        </div>
 
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={isPublished}
-            onChange={(e) => setIsPublished(e.target.checked)}
-          />
-          <label>Yayınla</label>
-        </div>
+          {/* Seçilen etiketler aşağıya alındı */}
+          <div className="flex flex-wrap gap-2">
+            {selectedTagIds.map(tagId => {
+              const tag = tags.find(t => t.id === tagId);
+              if (!tag) return null;
 
+              return (
+                <span key={tag.id} className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                  {tag.name}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTagIds(prev => prev.filter(id => id !== tag.id))}
+                    className="ml-2 text-blue-800 hover:text-red-600 font-bold"
+                  >
+                    ×
+                  </button>
+                </span>
+              );
+            })}
+          </div>
+        </div>
+        
         <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
           Gönder
         </button>

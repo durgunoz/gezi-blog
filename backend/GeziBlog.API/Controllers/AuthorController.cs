@@ -87,6 +87,7 @@ namespace GeziBlog.API.Controllers
         public async Task<IActionResult> GetAllAuthors()
         {
             var authors = await _context.Authors
+                .Where(a => a.Role == "Author")
                 .Select(a => new
                 {
                     a.Id,
@@ -96,6 +97,21 @@ namespace GeziBlog.API.Controllers
                 .ToListAsync();
 
             return Ok(authors);
+        }
+
+        [HttpGet("with-posts")]
+        public async Task<IActionResult> GetAuthorsWithPosts()
+        {
+            var authorsWithPosts = await _context.Authors
+                .Where(a => a.Posts.Any()) // En az bir postu olanlar
+                .Select(a => new
+                {
+                    a.Id,
+                    a.Name
+                })
+                .ToListAsync();
+
+            return Ok(authorsWithPosts);
         }
 
 

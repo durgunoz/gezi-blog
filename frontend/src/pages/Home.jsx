@@ -23,11 +23,16 @@ export default function Home() {
     axios.get('http://localhost:5229/api/Post/categories')
       .then(res => setCategories(res.data))
       .catch(err => console.error('Kategori API hatası:', err));
-
-    axios.get('http://localhost:5229/api/Post/authors')
-      .then(res => setAuthors(res.data))
-      .catch(err => console.error('Yazar API hatası:', err));
   }, []);
+
+  const uniqueAuthors = Array.from(
+  new Map(
+    posts
+      .filter(p => p.author && p.author.id) // yazar bilgisi varsa
+      .map(post => [post.author.id, post.author]) // Map için [id, author] olarak
+  ).values()
+);
+
 
   const limitWords = (text, wordLimit) => {
     const words = text.split(/\s+/);
@@ -63,7 +68,7 @@ export default function Home() {
           className="border px-4 py-2 rounded w-full"
         >
           <option value="">Yazar seç</option>
-          {authors.map(author => (
+          {uniqueAuthors.map(author => (
             <option key={author.id} value={author.id}>{author.name}</option>
           ))}
         </select>
