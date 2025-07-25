@@ -7,13 +7,14 @@ import PostDetail from './pages/PostDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AddPost from './pages/AddPost';
+import Footer from './components/Footer';
 
 const App = () => {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen flex flex-col bg-gray-100">
         <Header />
-        <main className="p-4">
+        <main className="flex-grow p-4">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/hakkimizda" element={<About />} />
@@ -23,6 +24,7 @@ const App = () => {
             <Route path="/add-post" element={<AddPost />} />
           </Routes>
         </main>
+        <Footer />
       </div>
     </Router>
   );

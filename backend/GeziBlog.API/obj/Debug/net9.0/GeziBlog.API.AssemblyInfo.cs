@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GeziBlog.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+09547bbc6eaa7e6a3deada618ff22aff902ac646")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2f89fddd72409e29f992325fbae75f1ec7c895d5")]
 [assembly: System.Reflection.AssemblyProductAttribute("GeziBlog.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GeziBlog.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

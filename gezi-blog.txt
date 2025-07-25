@@ -1,5 +1,5 @@
 axios veri çağırma
-swagger ui
+swagger ui CORS
 vite - front
 
 ilişkisel veri tabanı --> mssql
@@ -24,7 +24,8 @@ author ve admin post ekleyebili
 
 stateless token kullanıyor --> geçerlilik süresi var
 
-token clien'te silinirse başkası hala tokeni kullanabilir --> güvensizlik
+token clien'te silinirse başkası hala tokeni kullanabilir --> güvensizlik ama başlangıçta kullanılıyor.
+
 
 
 
@@ -43,10 +44,6 @@ http://localhost:5229/api/Post?Title=Ege
 
 
 
-admin@gezi.com 
-Admin123!
-
-
 berk@test.com
 123456Emre.!
 
@@ -57,8 +54,8 @@ enes@test.com
 
 kullanıcı
 
-emre@test.com"
-123456Emre
+emre@test.com
+123456Emre.!
 
 
 erdem123@test.com
