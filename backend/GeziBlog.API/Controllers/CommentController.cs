@@ -33,6 +33,39 @@ namespace GeziBlog.API.Controllers
             return Ok(comments);
         }
 
+        [HttpDelete("{id}")]
+        [Authorize] // Giriş zorunlu
+        public async Task<IActionResult> DeleteComment(int id)
+        {
+            var comment = await _context.Comments
+                .Include(c => c.Post)
+                .ThenInclude(p => p.Author)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (comment == null)
+                return NotFound("Yorum bulunamadı.");
+
+            var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (userIdFromToken == null)
+                return Unauthorized();
+
+            // Yorumu yazan kişi, postu yazan kişi veya admin değilse engelle
+            bool isCommentOwner = comment.UserId?.ToString() == userIdFromToken;
+            bool isPostOwner = comment.Post.AuthorId.ToString() == userIdFromToken;
+            bool isAdmin = userRole == "Admin";
+
+            if (!isCommentOwner && !isPostOwner && !isAdmin)
+                return Forbid("Yorumu silmeye yetkiniz yok.");
+
+            _context.Comments.Remove(comment);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+
         /// <summary>
         /// Sadece giriş yapmış kullanıcılar yorum bırakabilir.
         /// Yorum adı ve e-posta token'dan alınır.

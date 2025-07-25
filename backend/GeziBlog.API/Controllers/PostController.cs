@@ -4,6 +4,7 @@ using GeziBlog.API.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 
 namespace GeziBlog.API.Controllers
@@ -202,46 +203,63 @@ public async Task<IActionResult> CreatePost([FromBody] PostCreateDto postDto)
         }
 
 
-        /// <summary>Var olan bir yazıyı günceller.</summary>
-        [HttpPut("{id}")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        //[Microsoft.AspNetCore.Authorization.Authorize]
-        public async Task<IActionResult> UpdatePost(int id, [FromBody] PostUpdateDto postUpdateDto)
+    [HttpPut("{id}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(404)]
+    [Authorize]
+    public async Task<IActionResult> UpdatePost(int id, [FromBody] PostUpdateDto postUpdateDto)
+    {
+        var existingPost = await _context.Posts
+            .Include(p => p.Author)
+            .Include(p => p.PostCategories)
+            .Include(p => p.PostTags)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (existingPost == null) return NotFound();
+
+        var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+
+        if (userIdFromToken == null)
+            return Unauthorized();
+
+        bool isPostOwner = existingPost.AuthorId.ToString() == userIdFromToken;
+        bool isAdmin = userRole == "Admin";
+
+        if (!isPostOwner && !isAdmin)
+            return Forbid("Sadece yazının sahibi veya admin düzenleyebilir.");
+
+        // DTO'dan gelen verilerle güncelle
+        existingPost.Title = postUpdateDto.Title;
+        existingPost.Content = postUpdateDto.Content;
+        existingPost.ImageUrl = postUpdateDto.ImageUrl;
+        existingPost.IsPublished = postUpdateDto.IsPublished;
+
+        // Kategoriler
+        existingPost.PostCategories.Clear();
+        if (postUpdateDto.CategoryIds.Any())
         {
-            var existingPost = await _context.Posts
-                .Include(p => p.Author)
-                .Include(p => p.PostCategories)
-                .Include(p => p.PostTags)
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (existingPost == null) return NotFound();
-
-            // var username = User.Identity?.Name;
-            // var isAdmin = User.IsInRole("Admin");
-            // if (!isAdmin && existingPost.Author?.Name != username)
-            //     return Forbid("Sadece kendi yazınızı güncelleyebilirsiniz.");
-            
-            // DTO'dan gelen verilerle entity'i güncelle
-            existingPost.Title = postUpdateDto.Title;
-            existingPost.Content = postUpdateDto.Content;
-            existingPost.ImageUrl = postUpdateDto.ImageUrl;
-            existingPost.IsPublished = postUpdateDto.IsPublished;
-
-            // Kategorileri güncelle (Önce eskileri sil, sonra yenileri ekle)
-            existingPost.PostCategories.Clear();
-            if (postUpdateDto.CategoryIds.Any())
-                existingPost.PostCategories = postUpdateDto.CategoryIds.Select(catId => new PostCategory { PostId = id, CategoryId = catId }).ToList();
-
-            // Etiketleri güncelle (Önce eskileri sil, sonra yenileri ekle)
-            existingPost.PostTags.Clear();
-            if (postUpdateDto.TagIds.Any())
-                existingPost.PostTags = postUpdateDto.TagIds.Select(tagId => new PostTag { PostId = id, TagId = tagId }).ToList();
-
-            await _context.SaveChangesAsync();
-            return NoContent();
+            existingPost.PostCategories = postUpdateDto.CategoryIds
+                .Select(catId => new PostCategory { PostId = id, CategoryId = catId })
+                .ToList();
         }
+
+        // Etiketler
+        existingPost.PostTags.Clear();
+        if (postUpdateDto.TagIds.Any())
+        {
+            existingPost.PostTags = postUpdateDto.TagIds
+                .Select(tagId => new PostTag { PostId = id, TagId = tagId })
+                .ToList();
+        }
+
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
+
+
+        /// <summary>Belirli ID'ye sahip blog yazısını siler.</summary>
 
         [HttpDelete("{id}")]
         [Authorize] // 🔐 Giriş yapmış herkes, ama kontrol içeride yapılacak

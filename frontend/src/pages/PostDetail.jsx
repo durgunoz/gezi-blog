@@ -50,6 +50,30 @@ export default function PostDetail() {
     }, []);
 
 
+  const handleDeleteComment = async (commentId) => {
+  const confirmed = window.confirm("Bu yorumu silmek istediğinize emin misiniz?");
+  if (!confirmed) return;
+
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Yorumu silmek için giriş yapmalısınız.");
+    return;
+  }
+
+  try {
+    await axios.delete(`http://localhost:5229/api/Comment/${commentId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    // Yorumu listeden çıkar
+    setComments(prev => prev.filter(c => c.id !== commentId));
+  } catch (err) {
+    console.error("Yorum silinemedi:", err);
+    alert("Yorum silinirken bir hata oluştu.");
+  }
+};
+
+  
   // ✅ Yorum gönderme
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
@@ -154,22 +178,42 @@ export default function PostDetail() {
   </div>
 )}
 
+    {/* Yorumlar Başlığı ve Aralık */}
+<div className="mt-10 mb-4">
+  <h2 className="text-xl font-semibold">Yorumlar</h2>
+</div>
 
 
       {/* Yorumlar */}
-      <div className="mt-8">
-        <h3 className="font-semibold mb-2">Yorumlar:</h3>
-        {comments.length > 0 ? (
-          comments.map(comment => (
-            <div key={comment.id} className="border-t py-2">
-              <p className="text-sm font-semibold">{comment.name} ({comment.email})</p>
-              <p className="text-gray-700">{comment.message}</p>
+      {comments.length > 0 ? (
+        comments.map(comment => {
+          const canDeleteComment =
+            userRole === "Admin" ||
+            String(currentUserId) === String(comment.userId) || // yorumu yazan kişi
+            String(currentUserId) === String(post?.author?.id); // postun sahibi
+
+          return (
+            <div key={comment.id} className="border-t py-2 flex justify-between items-start">
+              <div>
+                <p className="text-sm font-semibold">{comment.name} ({comment.email})</p>
+                <p className="text-gray-700">{comment.message}</p>
+              </div>
+
+              {canDeleteComment && (
+                <button
+                  onClick={() => handleDeleteComment(comment.id)}
+                  className="text-red-500 text-sm hover:underline ml-4"
+                >
+                  Sil
+                </button>
+              )}
             </div>
-          ))
-        ) : (
-          <p className="text-gray-500">Henüz yorum yapılmamış.</p>
-        )}
-      </div>
+          );
+        })
+      ) : (
+        <p className="text-gray-500">Henüz yorum yapılmamış.</p>
+      )}
+
 
       {/* Yorum Ekle */}
       <form onSubmit={handleCommentSubmit} className="mt-6">

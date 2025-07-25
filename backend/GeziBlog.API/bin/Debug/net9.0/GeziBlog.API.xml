@@ -24,8 +24,8 @@
         <member name="M:GeziBlog.API.Controllers.PostController.CreatePost(GeziBlog.API.Dtos.PostCreateDto)">
             <summary>Yeni blog yazısı oluşturur.</summary>
         </member>
-        <member name="M:GeziBlog.API.Controllers.PostController.UpdatePost(System.Int32,GeziBlog.API.Dtos.PostUpdateDto)">
-            <summary>Var olan bir yazıyı günceller.</summary>
+        <member name="M:GeziBlog.API.Controllers.PostController.DeletePost(System.Int32)">
+            <summary>Belirli ID'ye sahip blog yazısını siler.</summary>
         </member>
         <member name="T:GeziBlog.API.Migrations.InitPostgres">
             <inheritdoc />
@@ -37,6 +37,18 @@
             <inheritdoc />
         </member>
         <member name="M:GeziBlog.API.Migrations.InitPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:GeziBlog.API.Migrations.AddUserToComment">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddUserToComment.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddUserToComment.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddUserToComment.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
     </members>
