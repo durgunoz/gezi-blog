@@ -27,67 +27,16 @@
         <member name="M:GeziBlog.API.Controllers.PostController.UpdatePost(System.Int32,GeziBlog.API.Dtos.PostUpdateDto)">
             <summary>Var olan bir yazıyı günceller.</summary>
         </member>
-        <member name="M:GeziBlog.API.Controllers.PostController.DeletePost(System.Int32)">
-            <summary>Yazıyı siler.</summary>
-        </member>
-        <member name="T:GeziBlog.API.Migrations.InitialCreate">
+        <member name="T:GeziBlog.API.Migrations.InitPostgres">
             <inheritdoc />
         </member>
-        <member name="M:GeziBlog.API.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:GeziBlog.API.Migrations.InitPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:GeziBlog.API.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:GeziBlog.API.Migrations.InitPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:GeziBlog.API.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:GeziBlog.API.Migrations.AddFullBlogSchema">
-            <inheritdoc />
-        </member>
-        <member name="M:GeziBlog.API.Migrations.AddFullBlogSchema.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:GeziBlog.API.Migrations.AddFullBlogSchema.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:GeziBlog.API.Migrations.AddFullBlogSchema.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:GeziBlog.API.Migrations.AddPasswordAndRoleToAuthor">
-            <inheritdoc />
-        </member>
-        <member name="M:GeziBlog.API.Migrations.AddPasswordAndRoleToAuthor.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:GeziBlog.API.Migrations.AddPasswordAndRoleToAuthor.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:GeziBlog.API.Migrations.AddPasswordAndRoleToAuthor.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:GeziBlog.API.Migrations.AddAuthorLoginFields">
-            <inheritdoc />
-        </member>
-        <member name="M:GeziBlog.API.Migrations.AddAuthorLoginFields.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:GeziBlog.API.Migrations.AddAuthorLoginFields.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:GeziBlog.API.Migrations.AddAuthorLoginFields.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:GeziBlog.API.Migrations.AddRefreshTokenTable">
-            <inheritdoc />
-        </member>
-        <member name="M:GeziBlog.API.Migrations.AddRefreshTokenTable.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:GeziBlog.API.Migrations.AddRefreshTokenTable.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:GeziBlog.API.Migrations.AddRefreshTokenTable.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:GeziBlog.API.Migrations.InitPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
     </members>

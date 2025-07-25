@@ -1,12 +1,18 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function PostDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
+
+  const [userRole, setUserRole] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // ✅ Post detayını çek
   useEffect(() => {
@@ -22,6 +28,29 @@ export default function PostDetail() {
       .catch(err => console.error("Yorumlar alınamadı:", err));
   }, [id]);
 
+    // ✅ JWT içinden kullanıcı bilgilerini al
+    useEffect(() => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+
+          const userId = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+          const role = payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+
+          setCurrentUserId(userId);
+          setUserRole(role);
+
+          console.log("✅ userId:", userId);
+          console.log("✅ role:", role);
+        } catch (err) {
+          console.error("JWT çözümlenemedi:", err);
+        }
+      }
+    }, []);
+
+
+  // ✅ Yorum gönderme
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
@@ -36,8 +65,7 @@ export default function PostDetail() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setNewComment(""); // input temizle
-      // tekrar yükle
+      setNewComment("");
       const res = await axios.get(`http://localhost:5229/api/Comment/by-post/${id}`);
       setComments(res.data);
     } catch (err) {
@@ -45,6 +73,30 @@ export default function PostDetail() {
       alert("Yorum eklenemedi.");
     }
   };
+
+  // ✅ Yazı silme
+  const handleDeletePost = async () => {
+    const confirmed = window.confirm("Bu yazıyı silmek istediğinize emin misiniz?");
+    if (!confirmed) return;
+
+    setIsDeleting(true);
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://localhost:5229/api/Post/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      alert("Yazı silindi.");
+      navigate("/");
+    } catch (err) {
+      console.error("Silme hatası:", err);
+      alert("Yazı silinemedi.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // ✅ Silme yetkisi kontrolü
+  const canDelete = userRole === "Admin" || String(currentUserId) === String(post?.author?.id);
 
   if (!post) return <p className="text-center mt-10">Yükleniyor...</p>;
 
@@ -82,6 +134,28 @@ export default function PostDetail() {
         </div>
       )}
 
+      {/* Silme Butonu */}
+{canDelete && (
+  <div className="mt-6 flex gap-3">
+    <button
+      onClick={handleDeletePost}
+      disabled={isDeleting}
+      className={`bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors duration-200 ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {isDeleting ? "Siliniyor..." : "🗑 Yazıyı Sil"}
+    </button>
+
+    {/* Düzenleme Butonu */}
+    <button
+      onClick={() => navigate(`/edit/${id}`)}
+      className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition-colors duration-200">
+      ✏️ Yazıyı Düzenle
+    </button>
+  </div>
+)}
+
+
+
       {/* Yorumlar */}
       <div className="mt-8">
         <h3 className="font-semibold mb-2">Yorumlar:</h3>
@@ -97,7 +171,7 @@ export default function PostDetail() {
         )}
       </div>
 
-      {/* Yorum Ekleme Alanı */}
+      {/* Yorum Ekle */}
       <form onSubmit={handleCommentSubmit} className="mt-6">
         <textarea
           value={newComment}

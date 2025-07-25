@@ -9,7 +9,6 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 
-
 namespace GeziBlog.API.Controllers
 {
     [ApiController]
@@ -26,19 +25,17 @@ namespace GeziBlog.API.Controllers
         }
 
         [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterDto dto)
+        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
-        // [ApiController] attribute'ü ve DTO'daki [Required] gibi kurallar sayesinde
-        // model validasyonu otomatik yapılır. Bu nedenle manuel kontrol gereksizdir.
-        var exists = await _context.Authors.AnyAsync(a => a.Email == dto.Email);
+            var exists = await _context.Authors.AnyAsync(a => a.Email == dto.Email);
             if (exists)
                 return BadRequest("Bu email zaten kayıtlı.");
 
             var author = new Author
             {
-            Name = dto.Name,
-            Email = dto.Email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+                Name = dto.Name,
+                Email = dto.Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 Role = "Reader"
             };
 
@@ -57,8 +54,32 @@ namespace GeziBlog.API.Controllers
                 return Unauthorized("Geçersiz e-posta veya şifre.");
 
             var token = GenerateJwtToken(user);
+            return Ok(new { token });
+        }
 
-            return Ok(new { token }); // 🔥 Burada response body'ye token dönülmeli
+        private string GenerateJwtToken(Author user)
+        {
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // ✅ Kullanıcı ID'si
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role)
+            };
+
+            var secretKey = _configuration["JwtSettings:SecretKey"];
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: "GeziBlog.API",
+                audience: "GeziBlog.Client",
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(2),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         [HttpPost("logout")]
@@ -83,7 +104,7 @@ namespace GeziBlog.API.Controllers
         }
 
         [HttpGet("all")]
-        [Authorize(Roles = "Admin")] // Sadece admin erişebilir
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllAuthors()
         {
             var authors = await _context.Authors
@@ -103,7 +124,7 @@ namespace GeziBlog.API.Controllers
         public async Task<IActionResult> GetAuthorsWithPosts()
         {
             var authorsWithPosts = await _context.Authors
-                .Where(a => a.Posts.Any()) // En az bir postu olanlar
+                .Where(a => a.Posts.Any())
                 .Select(a => new
                 {
                     a.Id,
@@ -114,9 +135,8 @@ namespace GeziBlog.API.Controllers
             return Ok(authorsWithPosts);
         }
 
-
         [HttpPut("promote/{id}")]
-        [Authorize(Roles = "Admin")] // Sadece admin erişebilir
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PromoteToAuthor(int id)
         {
             var user = await _context.Authors.FindAsync(id);
@@ -131,31 +151,5 @@ namespace GeziBlog.API.Controllers
 
             return Ok(new { message = $"{user.Name} artık bir Author." });
         }
-
-
-        private string GenerateJwtToken(Author user)
-        {
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Name, user.Name),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role)
-            };
-
-            var secretKey = _configuration["JwtSettings:SecretKey"];
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: null,
-                audience: null,
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
     }
 }

@@ -1,3 +1,4 @@
+docker postgre
 axios veri çağırma
 swagger ui CORS
 vite - front

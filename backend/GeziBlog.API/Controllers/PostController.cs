@@ -243,25 +243,29 @@ public async Task<IActionResult> CreatePost([FromBody] PostCreateDto postDto)
             return NoContent();
         }
 
-        /// <summary>Yazıyı siler.</summary>
         [HttpDelete("{id}")]
+        [Authorize] // 🔐 Giriş yapmış herkes, ama kontrol içeride yapılacak
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        //[Microsoft.AspNetCore.Authorization.Authorize]
+        [ProducesResponseType(403)]
         public async Task<IActionResult> DeletePost(int id)
         {
             var post = await _context.Posts.Include(p => p.Author).FirstOrDefaultAsync(p => p.Id == id);
             if (post == null) return NotFound();
 
-            // var username = User.Identity?.Name;
-            // var isAdmin = User.IsInRole("Admin");
-            // if (!isAdmin && post.Author?.Name != username)
-            //     return Forbid("Sadece kendi yazınızı silebilirsiniz.");
+            var username = User.Identity?.Name;
+            var isAdmin = User.IsInRole("Admin");
+
+            if (!isAdmin && post.Author?.Name != username)
+            {
+                return Forbid("Sadece kendi yazınızı silebilirsiniz.");
+            }
 
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
 
         private PostDto MapPostToDto(Post post)
         {

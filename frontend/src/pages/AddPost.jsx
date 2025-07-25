@@ -82,7 +82,7 @@ export default function AddPost() {
         />
 
         {/* Kategori seçimi */}
-        {/* <div>
+         <div>
           <label className="block font-medium">Kategoriler:</label>
           <select
             multiple
@@ -96,7 +96,7 @@ export default function AddPost() {
               <option key={cat.id} value={cat.id}>{cat.name}</option>
             ))}
           </select>
-        </div> */}
+        </div> 
 
         {/* Etiket seçimi */}
         <div>
