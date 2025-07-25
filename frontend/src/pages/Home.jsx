@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
@@ -8,13 +8,12 @@ export default function Home() {
   const [authors, setAuthors] = useState([]);
 
   const [filters, setFilters] = useState({
-    title: "",
-    categoryId: "",
-    tagId: "",
-    authorId: ""
+    title: '',
+    categoryId: '',
+    tagId: '',
+    authorId: ''
   });
 
-  // ✅ API çağrıları (Postlar + Kategoriler + Yazarlar)
   useEffect(() => {
     axios.get('http://localhost:5229/api/Post')
       .then(res => setPosts(res.data))
@@ -26,13 +25,11 @@ export default function Home() {
   }, []);
 
   const uniqueAuthors = Array.from(
-  new Map(
-    posts
-      .filter(p => p.author && p.author.id) // yazar bilgisi varsa
-      .map(post => [post.author.id, post.author]) // Map için [id, author] olarak
-  ).values()
-);
-
+    new Map(
+      posts.filter(p => p.author && p.author.id)
+        .map(post => [post.author.id, post.author])
+    ).values()
+  );
 
   const limitWords = (text, wordLimit) => {
     const words = text.split(/\s+/);
@@ -40,86 +37,93 @@ export default function Home() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto mt-8 space-y-8">
-      {/* 🔍 Filtre Alanı */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <input
-          type="text"
-          placeholder="Başlığa göre ara"
-          value={filters.title}
-          onChange={e => setFilters({ ...filters, title: e.target.value })}
-          className="border px-4 py-2 rounded w-full"
-        />
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pb-10">
+      <div className="max-w-7xl mx-auto pt-6 px-6">
+        {/* 🔍 Filtre Alanı */}
+        <div className="bg-white/90 backdrop-blur-md p-6 rounded-xl shadow-lg shadow-blue-100 mb-10 border border-blue-100">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <input
+              type="text"
+              placeholder="Başlık veya içerik ara..."
+              value={filters.title}
+              onChange={e => setFilters({ ...filters, title: e.target.value })}
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-sky-400"
+            />
 
-        <select
-          value={filters.categoryId}
-          onChange={e => setFilters({ ...filters, categoryId: e.target.value })}
-          className="border px-4 py-2 rounded w-full"
-        >
-          <option value="">Kategori seç</option>
-          {categories.map(cat => (
-            <option key={cat.id} value={cat.id}>{cat.name}</option>
-          ))}
-        </select>
+            <select
+              value={filters.categoryId}
+              onChange={e => setFilters({ ...filters, categoryId: e.target.value })}
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-sky-400"
+            >
+              <option value="">Kategori seç</option>
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
 
-        <select
-          value={filters.authorId}
-          onChange={e => setFilters({ ...filters, authorId: e.target.value })}
-          className="border px-4 py-2 rounded w-full"
-        >
-          <option value="">Yazar seç</option>
-          {uniqueAuthors.map(author => (
-            <option key={author.id} value={author.id}>{author.name}</option>
-          ))}
-        </select>
+            <select
+              value={filters.authorId}
+              onChange={e => setFilters({ ...filters, authorId: e.target.value })}
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-sky-400"
+            >
+              <option value="">Yazar seç</option>
+              {uniqueAuthors.map(author => (
+                <option key={author.id} value={author.id}>{author.name}</option>
+              ))}
+            </select>
 
-        <button
-          onClick={() => {
-            axios.get('http://localhost:5229/api/Post', {
-              params: {
-                title: filters.title,
-                categoryId: filters.categoryId || undefined,
-                authorId: filters.authorId || undefined
-              }
-            })
-              .then(res => setPosts(res.data))
-              .catch(err => console.error('Filtreleme hatası:', err));
-          }}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Filtrele
-        </button>
-      </div>
-
-      {/* 📝 Post Listesi */}
-        {posts.map(post => (
-          <div key={post.id} className="bg-white shadow-md rounded-lg p-6">
-            <h2 className="text-2xl font-bold text-center mb-2">
-              <Link to={`/post/${post.id}`} className="hover:underline">
-                {post.title}
-              </Link>
-            </h2>
-            <p className="text-center text-gray-500 text-sm mb-4">
-              {new Date(post.createdAt).toLocaleDateString()} — {post.author?.name}
-            </p>
-            <p className="text-gray-700 mb-4">{limitWords(post.content, 50)}</p>
-
-            {post.tags?.length > 0 && (
-              <div className="flex flex-wrap justify-center gap-2 mt-4">
-                {post.tags.map(tag => (
-                  <span key={tag.id} className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">
-                    {tag.name}
-                  </span>
-                ))}
-              </div>
-            )}
+            <button
+              onClick={() => {
+                axios.get('http://localhost:5229/api/Post', {
+                  params: {
+                    title: filters.title,
+                    categoryId: filters.categoryId || undefined,
+                    authorId: filters.authorId || undefined
+                  }
+                })
+                  .then(res => setPosts(res.data))
+                  .catch(err => console.error('Filtreleme hatası:', err));
+              }}
+              className="bg-sky-500 hover:bg-sky-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition"
+            >
+              Filtrele
+            </button>
           </div>
-        ))}
+        </div>
 
+        {/* 📝 Post Listesi */}
+        <div className="space-y-6">
+          {posts.map(post => (
+            <div key={post.id} className="bg-white/90 border border-gray-200 shadow-md shadow-blue-100 rounded-xl p-6 hover:shadow-lg transition-all duration-200">
+              <h2 className="text-2xl font-semibold text-center text-gray-800 mb-1">
+                <Link to={`/post/${post.id}`} className="hover:text-sky-600 hover:underline">
+                  {post.title}
+                </Link>
+              </h2>
+              <p className="text-sm text-center text-gray-500 mb-4">
+                {new Date(post.createdAt).toLocaleDateString()} — {post.author?.name}
+              </p>
+              <p className="text-gray-700 leading-relaxed text-justify mb-4">
+                {limitWords(post.content, 50)}
+              </p>
 
-      {posts.length === 0 && (
-        <p className="text-center text-gray-500">Yükleniyor veya veri bulunamadı.</p>
-      )}
+              {post.tags?.length > 0 && (
+                <div className="flex flex-wrap justify-center gap-2">
+                  {post.tags.map(tag => (
+                    <span key={tag.id} className="bg-sky-100 text-sky-800 text-xs font-medium px-3 py-1 rounded-full shadow-sm">
+                      {tag.name}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+
+          {posts.length === 0 && (
+            <p className="text-center text-gray-500 text-lg">Yükleniyor veya içerik bulunamadı.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
