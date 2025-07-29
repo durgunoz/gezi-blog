@@ -48,6 +48,7 @@ namespace GeziBlog.API.Controllers
             var userProfile = new UserProfile
             {
                 Id = authorId.Value,
+                AuthorId = authorId.Value, 
                 Age = dto.Age,
                 Gender = dto.Gender,
                 Nationality = dto.Nationality,

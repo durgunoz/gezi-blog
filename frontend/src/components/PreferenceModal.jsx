@@ -13,29 +13,40 @@ export default function PreferenceModal({ isOpen, onClose, onSave }) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
+const handleSubmit = async () => {
+  const token = localStorage.getItem("token");
 
-  const handleSubmit = async () => {
-    try {
-      const res = await fetch("/api/userprofiles", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(form),
-      });
-
-      if (res.ok) {
-        onSave?.();
-        onClose();
-      } else {
-        const data = await res.json();
-        alert(data.message || "Hata oluştu.");
+  try {
+    // Önce kullanıcı profili var mı diye kontrol et
+    const check = await fetch("http://localhost:5229/api/userprofiles/me", {
+      headers: {
+        Authorization: `Bearer ${token}`
       }
-    } catch {
-      alert("Sunucu hatası");
+    });
+
+    const method = check.ok ? "PUT" : "POST"; // Varsa güncelle, yoksa oluştur
+
+    const res = await fetch("http://localhost:5229/api/userprofiles", {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(form)
+    });
+
+    if (res.ok) {
+      onSave?.();
+      onClose();
+    } else {
+      const data = await res.json();
+      alert(data.message || "Hata oluştu.");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    alert("Sunucu hatası");
+  }
+};
 
   if (!isOpen) return null;
 
