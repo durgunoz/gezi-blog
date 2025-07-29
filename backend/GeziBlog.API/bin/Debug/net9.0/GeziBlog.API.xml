@@ -27,6 +27,26 @@
         <member name="M:GeziBlog.API.Controllers.PostController.DeletePost(System.Int32)">
             <summary>Belirli ID'ye sahip blog yazısını siler.</summary>
         </member>
+        <member name="M:GeziBlog.API.Controllers.UserProfilesController.CreateUserProfile(GeziBlog.API.Dtos.UserProfileDto)">
+            <summary>
+            Kullanıcı profili oluşturur (sadece giriş yapan kullanıcı için)
+            </summary>
+        </member>
+        <member name="M:GeziBlog.API.Controllers.UserProfilesController.GetUserProfile(System.Int32)">
+            <summary>
+            Belirli ID'ye sahip kullanıcı profilini getirir
+            </summary>
+        </member>
+        <member name="M:GeziBlog.API.Controllers.UserProfilesController.GetMyProfile">
+            <summary>
+            Giriş yapan kullanıcının profilini getirir
+            </summary>
+        </member>
+        <member name="M:GeziBlog.API.Controllers.UserProfilesController.UpdateMyProfile(GeziBlog.API.Dtos.UserProfileDto)">
+            <summary>
+            Giriş yapan kullanıcının profilini günceller
+            </summary>
+        </member>
         <member name="T:GeziBlog.API.Migrations.InitPostgres">
             <inheritdoc />
         </member>
@@ -49,6 +69,30 @@
             <inheritdoc />
         </member>
         <member name="M:GeziBlog.API.Migrations.AddUserToComment.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:GeziBlog.API.Migrations.AddUserProfile">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddUserProfile.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddUserProfile.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddUserProfile.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:GeziBlog.API.Migrations.AddCityToUserProfile">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddCityToUserProfile.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddCityToUserProfile.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:GeziBlog.API.Migrations.AddCityToUserProfile.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
     </members>

@@ -10,6 +10,8 @@ namespace GeziBlog.API.Models
         public string PasswordHash { get; set; } = null!;
         public string Role { get; set; } = "Reader";
         public ICollection<Post> Posts { get; set; } = new List<Post>();
+        public UserProfile? Profile { get; set; }  // 1:1 ilişki
+
 
     }
 }

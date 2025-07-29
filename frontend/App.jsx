@@ -6,18 +6,18 @@ import About from './pages/About';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
-<Route path="/giris" element={<Login />} />
-<Route path="/kayit" element={<Register />} />
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-gray-100 relative">
         <Header />
         <main className="p-4">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/hakkimizda" element={<About />} />
+            <Route path="/giris" element={<Login />} />
+            <Route path="/kayit" element={<Register />} />
           </Routes>
         </main>
       </div>
