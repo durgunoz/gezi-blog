@@ -114,10 +114,8 @@ public async Task<IActionResult> GetPosts([FromQuery] PostFilterDto filter)
 
             return Ok(postDto);
         }
-
-
         /// <summary>Yeni blog yazısı oluşturur.</summary>
-[HttpPost]
+        [HttpPost]
 [ProducesResponseType(typeof(PostDto), 201)]
 [ProducesResponseType(400)]
 [Authorize(Roles = "Author,Admin")]

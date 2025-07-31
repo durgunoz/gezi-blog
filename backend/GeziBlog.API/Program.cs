@@ -16,6 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// HTTP Client (Python chatbot ile konuşmak için)
+builder.Services.AddHttpClient();
 
 // JWT key appsettings.json'dan çekilir
 var jwtSecretKey = builder.Configuration["JwtSettings:SecretKey"];
@@ -40,7 +42,6 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 {
     x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
-
 
 // Swagger + JWT
 builder.Services.AddEndpointsApiExplorer();
@@ -82,7 +83,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173") // Vite veya başka port kullanıyorsan burayı güncelle
+        policy.WithOrigins("http://localhost:5173") // frontend (Vite vs.)
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -100,20 +101,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Statik dosyalar
 app.UseStaticFiles();
-
-// CORS
 app.UseCors("AllowFrontend");
-
-// HTTPS
 app.UseHttpsRedirection();
 
-// Auth
-app.UseAuthentication(); // JWT doğrulaması önce olmalı
+app.UseAuthentication(); // JWT doğrulama
 app.UseAuthorization();
 
-// Routing
 app.MapControllers();
 
 app.Run();

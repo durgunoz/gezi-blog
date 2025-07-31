@@ -40,46 +40,47 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white/70 backdrop-blur-md shadow-md sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-blue-600 hover:scale-105 transition-transform">
-          <Link to="/">GeziBlog</Link>
-        </h1>
+    <header className="bg-white/90 backdrop-blur-md shadow-md sticky top-0 z-50">
+    <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <h1 className="text-2xl font-bold text-blue-700 hover:scale-105 transition-transform drop-shadow-sm">
+        <Link to="/">GeziBlog</Link>
+      </h1>
 
-        <nav className="flex items-center gap-6 text-gray-700 font-medium">
-          <Link to="/" className="hover:text-blue-600 transition">Anasayfa</Link>
-          <Link to="/hakkimizda" className="hover:text-blue-600 transition">Hakkımızda</Link>
+      <nav className="flex items-center gap-6 text-gray-800 font-medium drop-shadow">
+        <Link to="/" className="hover:text-blue-700 transition">Anasayfa</Link>
+        <Link to="/hakkimizda" className="hover:text-blue-700 transition">Hakkımızda</Link>
 
-          {user ? (
-            <>
-              <span className="text-sm text-gray-600 font-semibold">
-                Merhaba, <span className="text-blue-700">{user.name}</span>
-              </span>
+        {user ? (
+          <>
+            <span className="text-sm text-gray-800 font-semibold drop-shadow-sm">
+              Merhaba, <span className="text-blue-800">{user.name}</span>
+            </span>
 
-              {(user.role === "Author" || user.role === "Admin") && (
-                <Link
-                  to="/add-post"
-                  className="bg-blue-100 text-blue-700 px-3 py-1 rounded hover:bg-blue-200 transition text-sm"
-                >
-                  ➕ Post Ekle
-                </Link>
-              )}
-
-              <button
-                onClick={handleLogout}
-                className="text-red-500 hover:text-red-600 transition text-sm"
+            {(user.role === "Author" || user.role === "Admin") && (
+              <Link
+                to="/add-post"
+                className="bg-blue-100 text-blue-800 px-3 py-1 rounded hover:bg-blue-200 transition text-sm drop-shadow-sm"
               >
-                Çıkış Yap
-              </button>
-            </>
-          ) : (
-            <>
-              <Link to="/login" className="hover:text-blue-600 transition">Giriş Yap</Link>
-              <Link to="/register" className="hover:text-blue-600 transition">Kayıt Ol</Link>
-            </>
-          )}
-        </nav>
-      </div>
-    </header>
+                ➕ Post Ekle
+              </Link>
+            )}
+
+            <button
+              onClick={handleLogout}
+              className="text-red-700 hover:text-red-800 transition text-sm font-medium drop-shadow-sm"
+            >
+              Çıkış Yap
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/login" className="hover:text-blue-700 transition drop-shadow-sm">Giriş Yap</Link>
+            <Link to="/register" className="hover:text-blue-700 transition drop-shadow-sm">Kayıt Ol</Link>
+          </>
+        )}
+      </nav>
+    </div>
+  </header>
+
   );
 }

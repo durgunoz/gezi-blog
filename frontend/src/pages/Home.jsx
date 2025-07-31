@@ -47,13 +47,13 @@ export default function Home() {
               placeholder="Başlık veya içerik ara..."
               value={filters.title}
               onChange={e => setFilters({ ...filters, title: e.target.value })}
-              className="border border-gray-300 px-4 py-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-sky-400"
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-sky-500 text-gray-800 placeholder-gray-600"
             />
 
             <select
               value={filters.categoryId}
               onChange={e => setFilters({ ...filters, categoryId: e.target.value })}
-              className="border border-gray-300 px-4 py-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-sky-400"
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-sky-500 text-gray-800"
             >
               <option value="">Kategori seç</option>
               {categories.map(cat => (
@@ -64,7 +64,7 @@ export default function Home() {
             <select
               value={filters.authorId}
               onChange={e => setFilters({ ...filters, authorId: e.target.value })}
-              className="border border-gray-300 px-4 py-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-sky-400"
+              className="border border-gray-300 px-4 py-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-sky-500 text-gray-800"
             >
               <option value="">Yazar seç</option>
               {uniqueAuthors.map(author => (
@@ -84,7 +84,7 @@ export default function Home() {
                   .then(res => setPosts(res.data))
                   .catch(err => console.error('Filtreleme hatası:', err));
               }}
-              className="bg-sky-500 hover:bg-sky-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition"
+              className="bg-sky-700 hover:bg-sky-800 text-white font-semibold px-4 py-2 rounded-lg shadow-lg drop-shadow-md transition"
             >
               Filtrele
             </button>
@@ -95,22 +95,22 @@ export default function Home() {
         <div className="space-y-6">
           {posts.map(post => (
             <div key={post.id} className="bg-white/90 border border-gray-200 shadow-md shadow-blue-100 rounded-xl p-6 hover:shadow-lg transition-all duration-200">
-              <h2 className="text-2xl font-semibold text-center text-gray-800 mb-1">
+              <h2 className="text-2xl font-semibold text-center text-gray-900 mb-1">
                 <Link to={`/post/${post.id}`} className="hover:text-sky-600 hover:underline">
                   {post.title}
                 </Link>
               </h2>
-              <p className="text-sm text-center text-gray-500 mb-4">
+              <p className="text-sm text-center text-gray-700 mb-4">
                 {new Date(post.createdAt).toLocaleDateString()} — {post.author?.name}
               </p>
-              <p className="text-gray-700 leading-relaxed text-justify mb-4">
+              <p className="text-gray-800 leading-relaxed text-justify mb-4">
                 {limitWords(post.content, 50)}
               </p>
 
               {post.tags?.length > 0 && (
                 <div className="flex flex-wrap justify-center gap-2">
                   {post.tags.map(tag => (
-                    <span key={tag.id} className="bg-sky-100 text-sky-800 text-xs font-medium px-3 py-1 rounded-full shadow-sm">
+                    <span key={tag.id} className="bg-sky-100 text-sky-900 text-xs font-medium px-3 py-1 rounded-full shadow-sm">
                       {tag.name}
                     </span>
                   ))}
@@ -120,7 +120,7 @@ export default function Home() {
           ))}
 
           {posts.length === 0 && (
-            <p className="text-center text-gray-500 text-lg">Yükleniyor veya içerik bulunamadı.</p>
+            <p className="text-center text-gray-700 text-lg">Yükleniyor veya içerik bulunamadı.</p>
           )}
         </div>
       </div>

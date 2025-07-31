@@ -28,6 +28,10 @@ stateless token kullanıyor --> geçerlilik süresi var
 token clien'te silinirse başkası hala tokeni kullanabilir --> güvensizlik ama başlangıçta kullanılıyor.
 
 
+CHATBOT
+---
+llama:3b --> basic model sadece (ingilizce)
+api key gerekmiyor ve free
 
 
 
@@ -61,3 +65,58 @@ emre@test.com
 
 erdem123@test.com
 123456Emre.!
+
+
+Chatbot Yapısı
+Chatbot sistemi, gelen kullanıcı mesajlarına yanıt vermek için belirli katmanlardan oluşan bir yapıya sahiptir. İş akışı aşağıdaki şekilde ilerler:
+
+1. Kullanıcı Girişi
+Kullanıcı bir mesaj gönderir (örneğin: “Yazılarımı göster”).
+
+Bu mesaj HTTP üzerinden sunucuya iletilir (genellikle POST /api/chat gibi bir endpoint'e).
+
+2. Controller Katmanı
+Mesaj ChatController tarafından alınır.
+
+Controller, mesajı işlerken bir servis sınıfına yönlendirir.
+
+Bu noktada mesajın içeriği ve kullanıcı bilgisi işlenmek üzere ChatService’e aktarılır.
+
+3. Servis Katmanı
+ChatService, mesajı analiz eder.
+
+Ne tür bir istek olduğunu belirler (örneğin: selamlaşma mı, yazı listeleme mi, öneri mi?).
+
+Gerekirse repository katmanından veri çeker.
+
+4. Repository Katmanı
+Veritabanı işlemleri bu katmanda gerçekleşir.
+
+Örneğin, “Kullanıcının yazılarını getir” gibi istekler burada gerçekleştirilir.
+
+Elde edilen veriler, servis katmanına döndürülür.
+
+5. Cevap Oluşturma
+ChatService, gelen veriye göre bir cevap üretir.
+
+Cevap sade bir metin olabilir veya dinamik olarak oluşturulabilir.
+
+Bu cevap tekrar controller’a iletilir.
+
+6. Yanıtın Dönülmesi
+Controller, cevabı kullanıcıya JSON olarak döner.
+
+Örnek: { "reply": "Toplam 3 yazınız var: A, B, C" }
+
+Bu yapı sayesinde sistem:
+
+Genişletilebilir,
+
+Test edilebilir,
+
+Bakımı kolay bir chatbot altyapısı sunar.
+
+
+
+
+
