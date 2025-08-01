@@ -7,7 +7,6 @@ import json
 # Ortam değişkenlerini yükle
 load_dotenv()
 
-# Veritabanı bağlantı bilgileri
 DB_CONFIG = {
     "dbname": os.getenv("DB_NAME"),
     "user": os.getenv("DB_USER"),
@@ -16,10 +15,9 @@ DB_CONFIG = {
     "port": os.getenv("DB_PORT")
 }
 
-# Kullanıcıya ait geçmiş mesajları tutar
 conversation_memory = {}
+MAX_MEMORY_LENGTH = 10
 
-# Veritabanından kullanıcı profilini çek
 def get_user_profile(user_id):
     try:
         with psycopg2.connect(**DB_CONFIG) as conn:
@@ -38,53 +36,44 @@ def get_user_profile(user_id):
                 "occupation": row[3],
                 "city": row[4]
             }
-        else:
-            print(f"User not found with ID = {user_id}")
     except Exception as e:
         print(f"Database error: {str(e)}")
     return None
 
-# Konuşmayı başlat
 def init_conversation(user_id, profile):
-    custom_prompt = f"""
-Sen yardımcı ve samimi bir seyahat asistanısın.
+    custom_prompt = """
+Sen kısa, net ve kararlı bir seyahat asistanısın.
 
-Görevin, kullanıcıya kişiselleştirilmiş bir tatil planlamasında adım adım sorular sorarak rehberlik etmek.
-
-Kullanıcı profili:
-- Yaş: {profile['age']}
-- Cinsiyet: {profile['gender']}
-- Uyruk: {profile['nationality']}
-- Meslek: {profile['occupation']}
-- Yaşadığı şehir: {profile['city']}
-
-🧠 Davranış Kuralları:
-- Sohbete kullanıcıyı selamlayarak başla ve nasıl bir tatil aradığını sor (örneğin: deniz, doğa, kültür, macera, dinlenme).
-- Hemen destinasyon önerme!
-- Önce kullanıcının seyahat tercihlerini öğren (mevsim, iklim, bütçe, yalnız mı grup halinde mi seyahat ediyor vb.).
-- Kullanıcının yaşadığı şehirdeki yerleri önermemelisin — ancak kullanıcı özellikle isterse olabilir.
-- Kullanıcının şehrinden kolay ulaşılabilecek yerleri önceliklendir (vizesiz, direkt ulaşım vs.).
-  Örneğin: İstanbul’da yaşayan bir Türk için Karadağ, Gürcistan, Arnavutluk, Kuzey Kıbrıs gibi yerler uygun.
-- En iyi tatil yerini bulmak için birkaç kez üst üste soru sor.
-- Konuşma doğal ve insan gibi akmalı, robot gibi olmasın.
-
-🎯 Hedef:
-Ancak kullanıcının isteklerini, süresini ve kısıtlarını öğrendikten sonra; ona 2-3 uygun destinasyon öner ve nedenlerini açıkla.
+Kurallar:
+- Cevapların 3 cümleyi geçmesin.
+- Sadece Türkçe konuş.
+- Gereksiz soru sorma. Öneriye odaklan.
+- Her cevabın somut bir yer ismi ve neden içersin.
+- Kullanıcının yaşadığı şehirdeki yerleri önermemelisin.
 """
     conversation_memory[user_id] = [
-        {"role": "user", "content": custom_prompt},
+        {"role": "system", "content": custom_prompt},
         {"role": "user", "content": "Selam! Bir tatil planlamak istiyorum."}
     ]
 
-# Chat fonksiyonu
+def shorten_response(text, max_sentences=3):
+    sentences = text.strip().split('.')
+    short = '.'.join([s.strip() for s in sentences if s.strip()][:max_sentences])
+    return short + '.' if short and not short.endswith('.') else short
+
+def filter_questions(text, max_questions=1):
+    questions = [s for s in text.split('.') if '?' in s]
+    if len(questions) > max_questions:
+        text = '.'.join([s for s in text.split('.') if '?' not in s])
+    return text.strip()
+
 def chat(user_id, user_message):
     if user_message.strip().lower() in ["reset", "sıfırla"]:
-        # reset komutu geldiyse sıfırla ve yeniden başlat
         profile = get_user_profile(user_id)
         if not profile:
             return "Kullanıcı profili bulunamadı."
         init_conversation(user_id, profile)
-        return "Sohbet sıfırlandı. Hazırsan nasıl bir tatil hayal ettiğini bana anlat!"
+        return "Sohbet sıfırlandı. Nasıl bir tatil düşünüyorsun?"
 
     if user_id not in conversation_memory:
         profile = get_user_profile(user_id)
@@ -93,7 +82,6 @@ def chat(user_id, user_message):
         init_conversation(user_id, profile)
 
     conversation_memory[user_id].append({"role": "user", "content": user_message})
-
 
     try:
         response = requests.post(
@@ -112,20 +100,16 @@ def chat(user_id, user_message):
                 if "message" in data and "content" in data["message"]:
                     assistant_reply += data["message"]["content"]
 
+        assistant_reply = filter_questions(assistant_reply)
+        assistant_reply = shorten_response(assistant_reply)
+
         conversation_memory[user_id].append({"role": "assistant", "content": assistant_reply})
+
+        if len(conversation_memory[user_id]) > MAX_MEMORY_LENGTH:
+            initial_prompt = conversation_memory[user_id][0]
+            last_user_input = {"role": "user", "content": user_message}
+            conversation_memory[user_id] = [initial_prompt, last_user_input]
+
         return assistant_reply
     except Exception as e:
-        return f"An error occurred: {str(e)}"
-
-# # CLI Test
-# if __name__ == "__main__":
-#     user_id = 2  # örnek kullanıcı ID
-#     print("Welcome to your travel assistant chatbot! (Type 'exit' to quit, or 'reset' to restart)")
-
-#     while True:
-#         msg = input("You: ")
-#         if msg.lower() in ["exit", "quit", "çık"]:
-#             print("Goodbye! Safe travels. 🌍")
-#             break
-#         yanit = chat(user_id, msg)
-#         print("Bot:", yanit)
+        return f"Hata oluştu: {str(e)}"

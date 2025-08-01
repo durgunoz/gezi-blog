@@ -21,7 +21,7 @@ giriş yapınca : admin, author, reader
 admin'de reader'ı author yapıcak yetki
 author ve admin post ekleyebili
 
-
+lazy loading for perfomance
 
 stateless token kullanıyor --> geçerlilik süresi var
 

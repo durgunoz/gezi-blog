@@ -2,9 +2,13 @@ using System.Reflection;
 using System.Text;
 using GeziBlog.API.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.IO.Compression;
+using Microsoft.Extensions.FileProviders;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,19 +16,43 @@ var builder = WebApplication.CreateBuilder(args);
 // 1. Services
 // ----------------------
 
-// DB bağlantısı - Docker
+// ✅ Gzip + Brotli sıkıştırma aktif
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
+    {
+        "application/json"
+    });
+
+    options.Providers.Add<GzipCompressionProvider>();
+    options.Providers.Add<BrotliCompressionProvider>();
+});
+
+builder.Services.Configure<GzipCompressionProviderOptions>(o =>
+{
+    o.Level = CompressionLevel.Fastest;
+});
+
+builder.Services.Configure<BrotliCompressionProviderOptions>(o =>
+{
+    o.Level = CompressionLevel.Fastest;
+});
+
+
+// DB bağlantısı
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// HTTP Client (Python chatbot ile konuşmak için)
+// HTTP Client
 builder.Services.AddHttpClient();
 
-// JWT key appsettings.json'dan çekilir
+// JWT ayarları
 var jwtSecretKey = builder.Configuration["JwtSettings:SecretKey"];
 if (string.IsNullOrEmpty(jwtSecretKey) || jwtSecretKey.Length < 32)
     throw new Exception("JWT secret key tanımlı değil veya yeterince güçlü değil!");
 
-// JWT Authentication
+// ✅ JWT Auth
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -37,13 +65,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// Controllers
+// ✅ JSON döngü önleme
 builder.Services.AddControllers().AddJsonOptions(x =>
 {
     x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
 
-// Swagger + JWT
+// ✅ Swagger & JWT
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -78,12 +106,12 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// CORS
+// ✅ CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173") // frontend (Vite vs.)
+        policy.WithOrigins("http://localhost:5173")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -101,13 +129,39 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseStaticFiles();
+// ✅ Gzip middleware
+app.UseResponseCompression();
+
+// ✅ Tarayıcı cache için headers
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=604800"); // 7 gün
+    }
+});
+
+// ✅ dist klasörünü sun (Vite build çıktısı)
+var distPath = Path.Combine(
+    Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory())!.FullName)!.FullName,
+    "frontend", "dist");
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(distPath),
+    RequestPath = "",
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=604800");
+    }
+});
+
+
 app.UseCors("AllowFrontend");
 app.UseHttpsRedirection();
-
-app.UseAuthentication(); // JWT doğrulama
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
+app.MapFallbackToFile("index.html");
 
 app.Run();
