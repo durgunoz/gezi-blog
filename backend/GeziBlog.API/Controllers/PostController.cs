@@ -114,6 +114,65 @@ public async Task<IActionResult> GetPosts([FromQuery] PostFilterDto filter)
 
             return Ok(postDto);
         }
+
+/// <summary>Sıralı blog yazılarını getirir.</summary>
+[HttpGet("sorted")]
+[ProducesResponseType(typeof(IEnumerable<PostDto>), 200)]
+public async Task<IActionResult> SortPosts([FromQuery] string sortBy = "date", [FromQuery] string sortOrder = "desc")
+{
+    var query = _context.Posts
+        .Include(p => p.Author)
+        .Include(p => p.PostCategories).ThenInclude(pc => pc.Category)
+        .Include(p => p.PostTags).ThenInclude(pt => pt.Tag)
+        .AsQueryable();
+
+    // Sıralama uygulanıyor
+    var order = sortOrder.ToLower() == "asc";
+
+    switch (sortBy.ToLower())
+    {
+        case "title":
+            query = order ? query.OrderBy(p => p.Title) : query.OrderByDescending(p => p.Title);
+            break;
+        case "viewcount":
+            query = order ? query.OrderBy(p => p.ViewCount) : query.OrderByDescending(p => p.ViewCount);
+            break;
+        case "date":
+        default:
+            query = order ? query.OrderBy(p => p.CreatedAt) : query.OrderByDescending(p => p.CreatedAt);
+            break;
+    }
+
+    var posts = await query.Select(p => new PostDto
+    {
+        Id = p.Id,
+        Title = p.Title,
+        Content = p.Content.Length > 150 ? p.Content.Substring(0, 150) + "..." : p.Content,
+        CreatedAt = p.CreatedAt,
+        ImageUrl = p.ImageUrl,
+        IsPublished = p.IsPublished,
+        ViewCount = p.ViewCount,
+        Author = p.Author != null ? new AuthorDto
+        {
+            Id = p.Author.Id,
+            Name = p.Author.Name
+        } : new AuthorDto(),
+        Categories = p.PostCategories.Select(pc => new CategoryDto
+        {
+            Id = pc.Category.Id,
+            Name = pc.Category.Name
+        }).ToList(),
+        Tags = p.PostTags.Select(pt => new TagDto
+        {
+            Id = pt.Tag.Id,
+            Name = pt.Tag.Name
+        }).ToList()
+    }).ToListAsync();
+
+    return Ok(posts);
+}
+
+
         /// <summary>Yeni blog yazısı oluşturur.</summary>
         [HttpPost]
 [ProducesResponseType(typeof(PostDto), 201)]

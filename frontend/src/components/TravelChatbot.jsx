@@ -1,11 +1,16 @@
 import { useState, useRef } from "react";
+import PreferenceModal from "./PreferenceModal"; // Gerekirse yolu düzelt
 
 export default function TravelChatbot() {
   const [messages, setMessages] = useState([
-    { sender: "bot", text: "Merhaba! Sana özel bir seyahat planı hazırlamamı ister misin?" },
+    {
+      sender: "bot",
+      text: "Merhaba! Sana özel bir seyahat planı hazırlamamı ister misin?",
+    },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const panelRef = useRef(null);
 
   const toggleChat = () => {
@@ -37,7 +42,10 @@ export default function TravelChatbot() {
       setMessages((prev) => [...prev, { sender: "bot", text: data.reply }]);
     } catch (error) {
       console.error("Chatbot API hatası:", error);
-      setMessages((prev) => [...prev, { sender: "bot", text: "Üzgünüm, bir hata oluştu." }]);
+      setMessages((prev) => [
+        ...prev,
+        { sender: "bot", text: "Üzgünüm, bir hata oluştu." },
+      ]);
     } finally {
       setLoading(false);
     }
@@ -59,15 +67,27 @@ export default function TravelChatbot() {
       >
         <div className="flex-1 overflow-y-auto p-3 space-y-3 text-sm">
           {messages.map((msg, i) => (
-            <div key={i} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
-              <div className={`px-4 py-2 rounded-xl max-w-[75%] ${
-                msg.sender === "user" ? "bg-blue-100 text-blue-900" : "bg-gray-100 text-gray-800 font-medium"
-              }`}>
+            <div
+              key={i}
+              className={`flex ${
+                msg.sender === "user" ? "justify-end" : "justify-start"
+              }`}
+            >
+              <div
+                className={`px-4 py-2 rounded-xl max-w-[75%] ${
+                  msg.sender === "user"
+                    ? "bg-blue-100 text-blue-900"
+                    : "bg-gray-100 text-gray-800 font-medium"
+                }`}
+              >
                 {msg.text}
               </div>
             </div>
           ))}
-          {loading && <div className="text-gray-400 text-xs">Bot yazıyor...</div>}
+
+          {loading && (
+            <div className="text-gray-400 text-xs">Bot yazıyor...</div>
+          )}
         </div>
 
         <div className="p-2 border-t flex gap-2">
@@ -78,11 +98,33 @@ export default function TravelChatbot() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           />
-          <button onClick={sendMessage} className="bg-indigo-700 text-white px-3 py-1 rounded text-sm">
+          <button
+            onClick={sendMessage}
+            className="bg-indigo-700 text-white px-3 py-1 rounded text-sm"
+          >
             Gönder
           </button>
         </div>
+
+        {/* Buraya yerleştirildi */}
+        <div className="px-3 pb-3 text-xs text-center text-gray-500 italic">
+          🔧 Daha iyi öneriler için{" "}
+          <button
+            onClick={() => setShowModal(true)}
+            className="text-indigo-600 underline hover:text-indigo-800"
+          >
+            bilgilerini doldur
+          </button>
+        </div>
       </div>
+
+      <PreferenceModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSave={() => {
+          console.log("Kullanıcı bilgileri kaydedildi.");
+        }}
+      />
     </div>
   );
 }
