@@ -109,7 +109,7 @@ export default function EditPost() {
         </div>
 
         <div>
-          <h3 className="font-semibold">Kategoriler:</h3>
+          <h2 className="font-semibold">Kategoriler:</h2>
           <div className="flex flex-wrap gap-2">
             {allCategories.map(cat => (
               <label key={cat.id} className="text-sm">

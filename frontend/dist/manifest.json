@@ -1,0 +1,21 @@
+{
+  "name": "GeziBlog",
+  "short_name": "GeziBlog",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#1d4ed8",
+  "background_color": "#ffffff",
+  "description": "GeziBlog ile kişisel seyahat hikayelerinizi paylaşın ve ilham alın!",
+  "icons": [
+    {
+      "src": "/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

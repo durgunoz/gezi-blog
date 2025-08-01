@@ -73,6 +73,7 @@ export default function Home() {
               />
 
               <select
+                aria-label="Kategori"
                 value={filters.categoryId}
                 onChange={e => setFilters({ ...filters, categoryId: e.target.value })}
                 className="border border-gray-300 px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
@@ -84,6 +85,7 @@ export default function Home() {
               </select>
 
               <select
+                aria-label="Yazar"
                 value={filters.authorId}
                 onChange={e => setFilters({ ...filters, authorId: e.target.value })}
                 className="border border-gray-300 px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
@@ -107,6 +109,7 @@ export default function Home() {
           <div className="w-full lg:w-1/3 bg-white border border-green-200 rounded-xl shadow-sm p-4">
             <div className="flex flex-col md:flex-row md:items-center gap-3">
               <select
+                aria-label="Sıralama kriteri"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
                 className="border border-gray-300 px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-400 flex-1"
@@ -116,6 +119,7 @@ export default function Home() {
               </select>
 
               <select
+                aria-label="Sıralama yönü"
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value)}
                 className="border border-gray-300 px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
@@ -136,31 +140,37 @@ export default function Home() {
 
         {/* 📝 Post Listesi */}
         <div className="space-y-6">
-          {posts.map(post => (
-            <div key={post.id} className="bg-white/90 border border-gray-200 shadow-md shadow-blue-100 rounded-xl p-6 hover:shadow-lg transition-all duration-200">
-              <h2 className="text-2xl font-semibold text-center text-gray-900 mb-1">
-                <Link to={`/post/${post.id}`} className="hover:text-sky-600 hover:underline">
-                  {post.title}
-                </Link>
-              </h2>
-              <p className="text-sm text-center text-gray-700 mb-4">
-                {new Date(post.createdAt).toLocaleDateString()} — {post.author?.name}
-              </p>
-              <p className="text-gray-800 leading-relaxed text-justify mb-4">
-                {limitWords(post.content, 50)}
-              </p>
+{posts.map(post => (
+  <article
+    key={post.id}
+    className="bg-white/90 border border-gray-200 shadow-md shadow-blue-100 rounded-xl p-6 hover:shadow-lg transition-all duration-200"
+  >
+    <h1 className="text-2xl font-semibold text-center text-gray-900 mb-1">
+      <Link to={`/post/${post.id}`} className="hover:text-sky-600 hover:underline">
+        {post.title}
+      </Link>
+    </h1>
+    <p className="text-sm text-center text-gray-700 mb-4">
+      {new Date(post.createdAt).toLocaleDateString()} — {post.author?.name}
+    </p>
+    <p className="text-gray-800 leading-relaxed text-justify mb-4">
+      {limitWords(post.content, 50)}
+    </p>
 
-              {post.tags?.length > 0 && (
-                <div className="flex flex-wrap justify-center gap-2">
-                  {post.tags.map(tag => (
-                    <span key={tag.id} className="bg-sky-100 text-sky-900 text-xs font-medium px-3 py-1 rounded-full shadow-sm">
-                      {tag.name}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+    {post.tags?.length > 0 && (
+      <ul className="flex flex-wrap justify-center gap-2">
+        {post.tags.map(tag => (
+          <li key={tag.id}>
+            <span className="bg-sky-100 text-sky-900 text-xs font-medium px-3 py-1 rounded-full shadow-sm">
+              {tag.name}
+            </span>
+          </li>
+        ))}
+      </ul>
+    )}
+  </article>
+))}
+
 
           {posts.length === 0 && (
             <p className="text-center text-gray-700 text-lg">Yükleniyor veya içerik bulunamadı.</p>

@@ -23,7 +23,7 @@ export default function Register() {
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <form onSubmit={handleRegister} className="bg-white p-8 rounded shadow-md w-full max-w-md space-y-4">
-        <h2 className="text-2xl font-bold text-center">Kayıt Ol</h2>
+        <h1 className="text-2xl font-bold text-center">Kayıt Ol</h1>
         <input
           type="text"
           placeholder="Adınız"

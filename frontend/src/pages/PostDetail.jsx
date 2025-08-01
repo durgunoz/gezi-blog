@@ -136,7 +136,7 @@ export default function PostDetail() {
 
       {post.categories?.length > 0 && (
         <div className="mb-4">
-          <h3 className="font-semibold">Kategoriler:</h3>
+          <h2 className="font-semibold">Kategoriler:</h2>
           <ul className="list-disc list-inside">
             {post.categories.map(cat => (
               <li key={cat.id}>{cat.name}</li>
@@ -163,7 +163,7 @@ export default function PostDetail() {
       )}
 
       <div className="mt-10 mb-4">
-        <h2 className="text-xl font-semibold">Yorumlar</h2>
+        <h3 className="text-xl font-semibold">Yorumlar</h3>
       </div>
 
       {comments.length > 0 ? (

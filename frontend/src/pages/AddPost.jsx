@@ -57,7 +57,7 @@ export default function AddPost() {
 
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Yeni Post Ekle</h2>
+      <h1 className="text-xl font-bold mb-4">Yeni Post Ekle</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
@@ -81,45 +81,48 @@ export default function AddPost() {
           className="w-full p-2 border rounded"
         />
 
-        {/* Kategori seçimi */}
-         <div>
-          <label className="block font-medium">Kategoriler:</label>
-          <select
-            multiple
-            value={selectedCategoryIds}
-            onChange={(e) =>
-              setSelectedCategoryIds(Array.from(e.target.selectedOptions, o => parseInt(o.value)))
-            }
-            className="w-full p-2 border rounded"
-          >
-            {categories.map(cat => (
-              <option key={cat.id} value={cat.id}>{cat.name}</option>
-            ))}
-          </select>
-        </div> 
+  {/* Kategori seçimi */}
+  <div>
+    <label htmlFor="category-select" className="block font-medium">Kategoriler:</label>
+    <select
+      id="category-select"
+      multiple
+      value={selectedCategoryIds}
+      onChange={(e) =>
+        setSelectedCategoryIds(Array.from(e.target.selectedOptions, o => parseInt(o.value)))
+      }
+      className="w-full p-2 border rounded"
+    >
+      {categories.map(cat => (
+        <option key={cat.id} value={cat.id}>{cat.name}</option>
+      ))}
+    </select>
+  </div>
+
 
         {/* Etiket seçimi */}
         <div>
           <label className="block font-medium mb-1">Etiketler:</label>
 
           {/* Select alanı yukarı */}
-          <select
-            value=""
-            onChange={(e) => {
-              const selected = parseInt(e.target.value);
-              if (!selectedTagIds.includes(selected)) {
-                setSelectedTagIds([...selectedTagIds, selected]);
-              }
-            }}
-            className="w-full p-2 border rounded mb-2"
-          >
-            <option value="">Etiket ekle</option>
-            {tags
-              .filter(tag => !selectedTagIds.includes(tag.id))
-              .map(tag => (
-                <option key={tag.id} value={tag.id}>{tag.name}</option>
-              ))}
-          </select>
+      <select
+        id="tag-select"
+        value=""
+        onChange={(e) => {
+          const selected = parseInt(e.target.value);
+          if (!selectedTagIds.includes(selected)) {
+            setSelectedTagIds([...selectedTagIds, selected]);
+          }
+        }}
+        className="w-full p-2 border rounded mb-2"
+      >
+        <option value="">Etiket ekle</option>
+        {tags
+          .filter(tag => !selectedTagIds.includes(tag.id))
+          .map(tag => (
+            <option key={tag.id} value={tag.id}>{tag.name}</option>
+          ))}
+      </select>
 
           {/* Seçilen etiketler aşağıya alındı */}
           <div className="flex flex-wrap gap-2">
